@@ -1,101 +1,73 @@
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import {
   View,
-  StyleSheet,
-  Image,
-  Dimensions,
-  TouchableOpacity,
   Text,
-  useWindowDimensions,
+  SafeAreaView,
+  Platform,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
-// const { width, height } = Dimensions.get("window");
-import Video from "react-native-video";
-
-import Orientation from "react-native-orientation";
+import AppList from "./src";
+import LinearGradient from "react-native-linear-gradient";
 const App = () => {
-  const videoPlayer = useRef();
-  const { width, height } = useWindowDimensions();
-
-  const [fullScreen, setFullScreen] = useState(false);
-  const [heightCurrent, setHeightCurrent] = useState(300);
-  const [widthCurrent, setWidthCurrent] = useState(width);
-
-  const [currentOrientation, setCurrentOrientation] = useState("");
-
-  useEffect(() => {
-    // Getting initial Orientation
-    const initial = Orientation.getInitialOrientation();
-    setCurrentOrientation("Current Device Orientation: " + initial);
-
-    // Listner for orientation change LANDSCAPE / PORTRAIT
-    Orientation.addOrientationListener(orientationChange);
-
-    return () => {
-      // Remember to remove listener
-      Orientation.removeOrientationListener(orientationChange);
-    };
-  }, []);
-
-  const orientationChange = (orientation) => {
-    setCurrentOrientation("Current Device Orientation: " + orientation);
-  };
-
-  const getCurrentOrientation = () => {
-    Orientation.getOrientation((err, orientation) => {
-      alert("Orientation: " + orientation);
-    });
-  };
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor={"rgba(0, 0, 0, 0)"} translucent={true} />
-      <View style={[fullScreen ? { transform: [{ rotate: "90deg" }] } : {}]}>
-        <Video
-          source={{
-            uri:
-              "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    <View style={[{ flex: 1 }]}>
+      <View style={[{ height: StatusBar.currentHeight }]}></View>
+      <StatusBar translucent backgroundColor={"rgba(0,0,0,0)"} />
+      <SafeAreaView style={[{ backgroundColor: "#fff" }]}>
+        <Text>Title</Text>
+      </SafeAreaView>
+      {Platform.OS === "android" && (
+        <LinearGradient
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 2 }}
+          colors={["rgba(0,0,0,0.08)", "transparent"]}
+          style={{
+            height: 4,
           }}
-          ref={(ref) => (videoPlayer.current = ref)}
-          resizeMode={"cover"}
-          volume={1.0}
-          style={[
-            {
-              zIndex: 1000,
-              width: fullScreen ? height + StatusBar.currentHeight : width,
-              height: fullScreen ? width + StatusBar.currentHeight : 300,
-              backgroundColor: "black",
-            },
-          ]}
-          controls={Platform.OS === "android" ? true : true}
         />
+      )}
+      <View style={[{ flex: 1, backgroundColor: "gray" }]}>
+        <AppList />
       </View>
+      <View style={[{ flex: 1 }]}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={{
+            backgroundColor: "#fff",
+            marginBottom: Platform.OS === "android" ? 0 : 16,
+            width: 100,
+            height: 100,
+            marginTop: 10,
+            marginLeft: 10,
+            justifyContent: "center",
+            alignItems: "center",
 
-      <TouchableOpacity
-        style={[{ position: "absolute", bottom: 0, left: 0 }]}
-        onPress={() => {
-          console.log('%cApp.js line:78 "object"', "color: #007acc;", "object");
-          setHeightCurrent(height);
-          setFullScreen(!fullScreen);
-        }}
-      >
-        <Text style={styles.buttonTextStyle}>
-          Locks the View to Landscape Mode
-        </Text>
-      </TouchableOpacity>
+            //iOS stuff
+            shadowOffset: { width: 0, height: 2 },
+            shadowColor: "rgba(0,0,0,0.03)",
+            shadowOpacity: 1,
+            shadowRadius: 4,
+          }}
+          onPress={() => {}}
+        >
+          <Text>123</Text>
+        </TouchableOpacity>
+        {Platform.OS === "android" && (
+          <View style={{ marginBottom: 12, width: 100, marginLeft: 10 }}>
+            <LinearGradient
+              colors={["rgba(0,0,0,0.5)", "transparent"]}
+              style={{
+                left: 0,
+                right: 0,
+                height: 4,
+              }}
+            />
+          </View>
+        )}
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  // image: {
-  //   width: width,
-  //   height: width,
-  // },
-});
 
 export default App;
